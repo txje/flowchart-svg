@@ -1,0 +1,18 @@
+Adds flowchart-specific functionality to svg.js
+
+This is certainly not the most elegant extension, and violates the purity of svg.js
+... particularly with that .attr ._attr mess :-/
+
+The following functions are added:
+
+draw.rounded(width, height, radius)
+  - draws and returns a simple rectangle with rounded corners
+
+draw.angled(start, end, concavity[, radius])
+  - draws and returns an angled line from start to end, concave "up" or "down"
+  - corner is curved if radius is given
+
+SVG.Line.arrow(size)
+SVG.Polyline.arrow(size)
+SVG.Path.arrow(size)
+  - draws and returns an arrow at the END of the given path/line

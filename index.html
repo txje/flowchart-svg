@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<head>
+  <script src="svg.min.js"></script>
+  <script src="flowchart.svg.js"></script>
+  <script>
+    function init() {
+      var draw = SVG("output").size(500, 500).fixSubPixelOffset();
+      draw.rect(100, 100).stroke("black").fill("white").move(50, 50);
+
+      var rounded = draw.rounded(100, 100, 20).stroke("red").fill("white").move(200, 200);
+      var txt = rounded.text("hi");
+      txt.font({family: "courier new", size:20});
+
+      var circle = draw.circle(200, 200, 25).stroke("blue").fill("white");
+      var txt = circle.text("I'm a circle!");
+      txt.font({size: 40});
+      circle.move(300, 300);
+
+      var line = draw.line(150, 100, 250, 200).stroke({width:1});
+      line.arrow(20).fill("white").stroke({width:1});
+
+      //var poly = draw.polyline("300,250 400,250 400,300").stroke({width:1}).fill("white");
+      //var angled = poly.arrow(40);
+      var sharp = draw.angled([300,250], [400,300], "down");
+      sharp.arrow(40);
+
+      //var path = draw.path("M 300 400 L 150 400 C 100 400 100 400 100 350 L 100 150").fill("none").stroke({width:1});
+      //var curved = path.arrow(30).stroke({width:5, color:"blue"}).fill("white");
+      var angle = draw.angled([300,400], [100,150], "up", 50);
+      angle.arrow(30).stroke({width:5, color:"blue"});
+    }
+  </script>
+</head>
+<body onload="init()">
+  <div id="output"></div>
+</body>
+</html>
