@@ -4,30 +4,35 @@
   <script src="flowchart.svg.js"></script>
   <script>
     function init() {
-      var draw = SVG("output").size(500, 500).fixSubPixelOffset();
-      draw.rect(100, 100).stroke("black").fill("white").move(50, 50);
+      var draw = SVG("output").size(1000, 800).fixSubPixelOffset();
+      var rect = draw.rect(300, 100).stroke("black").fill("white").move(50, 50);
+      rect.text("flowchart.svg").font({family:"courier new", size:30})
 
-      var rounded = draw.rounded(100, 100, 20).stroke("red").fill("white").move(200, 200);
-      var txt = rounded.text("hi");
+      var rounded = draw.rounded(200, 100, 40).stroke("black").fill("white").move(600, 50);
+      var txt = rounded.text("Do you like\nflowcharts?");
       txt.font({family: "courier new", size:20});
 
-      var circle = draw.circle(200, 200, 25).stroke("blue").fill("white");
-      var txt = circle.text("I'm a circle!");
-      txt.font({size: 40});
-      circle.move(300, 300);
+      var circle = draw.circle(150, 150, 25).stroke("red").fill("white");
+      var txt = circle.text("Go.\n\nJust go.").font({family: "courier new", size:20});
+      txt.font({size: 20});
+      circle.move(800, 300);
 
-      var line = draw.line(150, 100, 250, 200).stroke({width:1});
-      line.arrow(20).fill("white").stroke({width:1});
+      var no = draw.angled([800,100], [875,300], "down").arrow(20);
+      draw.text("No.").font({family: "courier new", size:20}).move(890, 200);
 
-      //var poly = draw.polyline("300,250 400,250 400,300").stroke({width:1}).fill("white");
-      //var angled = poly.arrow(40);
-      var sharp = draw.angled([300,250], [400,300], "down");
-      sharp.arrow(40);
+      var yes = draw.angled([700,150], [650,300], "up", 30).arrow(20);
+      draw.text("Yes.").font({family: "courier new", size:20}).move(715, 225);
 
-      //var path = draw.path("M 300 400 L 150 400 C 100 400 100 400 100 350 L 100 150").fill("none").stroke({width:1});
-      //var curved = path.arrow(30).stroke({width:5, color:"blue"}).fill("white");
-      var angle = draw.angled([300,400], [100,150], "up", 50);
-      angle.arrow(30).stroke({width:5, color:"blue"});
+      var box = draw.polygon("50,200 650,200 650,500 1000,500 1000,800 50,800 50,200").fill("white").stroke({width:1});
+      draw.text("Great.\nThat's really good.\nI like 'em too.\nCheck out the source for my extension to svg.js\nthat allows this sort of amazing flowcharts.").font({family: "courier new", size:20}).move(60,210);
+      draw.text("").font({family: "courier new", size:20}).move(60,210);
+
+      draw.rounded(300,200,30).move(100,400).fill("white").stroke({width:1}).text("Want some code?\nHave some problems?\nMore information?").font({family: "courier new", size:20});
+      draw.line(200,600, 300,700).stroke({width:1}).arrow(30);
+      draw.text("Sure.").font({family: "courier new", size:20}).move(255, 625);
+
+      var github = draw.link("http://github.com/txje/flowchart-svg").rect(200,50).fill("white").stroke({width:1}).move(200,700);
+      github.text("Github").font({family: "courier new", size:20}).fill("blue");
     }
   </script>
 </head>

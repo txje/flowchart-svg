@@ -68,7 +68,7 @@
     var elem_center = [elem_bbox.x + elem_bbox.width/2, elem_bbox.y + elem_bbox.height/2];
     // send these separately, if we send a dictionary, it will call back to attr()
     this._attr('x', elem_center[0] - text_bbox.width/2);
-    this._attr('y', elem_center[1] - text_bbox.height);
+    this._attr('y', elem_center[1] - text_bbox.height/2 - this._attr("font-size")/this.leading()/2);
   };
 
 
