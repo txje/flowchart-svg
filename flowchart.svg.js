@@ -1,9 +1,32 @@
 ;(function() {
+  // if the corners were circular based on radius, corner = 1 - Math.cos(Math.PI/4);
+  corner = 0.13; // alas, no
 
 
   // rounded rectangles
   SVG.Doc.prototype.rounded = function(width, height, radius) {
-    return this.path("M " + radius + " 0 L " + (width-radius) + " 0 C " + width + " 0 " + width + " 0 " + width + ' ' + radius + " L " + width + ' ' + (height-radius) + " C " + width + ' ' + height + ' ' + width + ' ' + height + ' ' + (width-radius) + ' ' + height + " L " + radius + ' ' + height + " C 0 " + height + " 0 " + height + " 0 " + (height-radius) + " L 0 " + radius + " C 0 0 0 0 " + radius + " 0");
+    var round = this.path("M " + radius + " 0 L " + (width-radius) + " 0 C " + width + " 0 " + width + " 0 " + width + ' ' + radius + " L " + width + ' ' + (height-radius) + " C " + width + ' ' + height + ' ' + width + ' ' + height + ' ' + (width-radius) + ' ' + height + " L " + radius + ' ' + height + " C 0 " + height + " 0 " + height + " 0 " + (height-radius) + " L 0 " + radius + " C 0 0 0 0 " + radius + " 0");
+    round.top_middle = SVG.Rect.prototype.top_middle;
+    round.bottom_middle = SVG.Rect.prototype.bottom_middle;
+    round.middle_left = SVG.Rect.prototype.middle_left;
+    round.middle_right = SVG.Rect.prototype.middle_right;
+    round.top_left = function() {
+      var bbox = this.bbox();
+      return [bbox.x + radius * corner, bbox.y + radius * corner];
+    }
+    round.top_right = function() {
+      var bbox = this.bbox();
+      return [bbox.x + bbox.width - radius * corner, bbox.y + radius * corner];
+    }
+    round.bottom_left = function() {
+      var bbox = this.bbox();
+      return [bbox.x + radius * corner, bbox.y + bbox.height - radius * corner];
+    }
+    round.bottom_right = function() {
+      var bbox = this.bbox();
+      return [bbox.x + bbox.width - radius * corner, bbox.y + bbox.height - radius * corner];
+    }
+    return round
   }
 
 
@@ -31,6 +54,40 @@
       return retval;
     }
   });
+  SVG.extend(SVG.Rect, SVG.Ellipse, {
+    top_middle: function() {
+      var bbox = this.bbox();
+      return [bbox.x + bbox.width/2, bbox.y];
+    },
+    bottom_middle: function() {
+      var bbox = this.bbox();
+      return [bbox.x + bbox.width/2, bbox.y + bbox.height];
+    },
+    middle_left: function() {
+      var bbox = this.bbox();
+      return [bbox.x, bbox.y + bbox.height/2];
+    },
+    middle_right: function() {
+      var bbox = this.bbox();
+      return [bbox.x + bbox.width, bbox.y + bbox.height/2];
+    }
+  });
+  SVG.Rect.prototype.top_left = function() {
+    var bbox = this.bbox();
+    return [bbox.x, bbox.y];
+  }
+  SVG.Rect.prototype.top_right = function() {
+    var bbox = this.bbox();
+    return [bbox.x + bbox.width, bbox.y];
+  }
+  SVG.Rect.prototype.bottom_left = function() {
+    var bbox = this.bbox();
+    return [bbox.x, bbox.y + bbox.height];
+  }
+  SVG.Rect.prototype.bottom_right = function() {
+    var bbox = this.bbox();
+    return [bbox.x + bbox.width, bbox.y + bbox.height];
+  }
   SVG.Text.prototype._attr = SVG.Text.prototype.attr;
   SVG.Text.prototype.attr = function(a, v, n) {
     var retval = this._attr(a, v, n);
@@ -106,5 +163,6 @@
     line.fill("none").stroke({width:1});
     return line;
   }
+
 
 }).call(this);

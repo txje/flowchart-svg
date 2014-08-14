@@ -16,3 +16,16 @@ SVG.Line.arrow(size)
 SVG.Polyline.arrow(size)
 SVG.Path.arrow(size)
   - draws and returns an arrow at the END of the given path/line
+
+SVG.Rect (incl. rounded)
+SVG.Ellipse (incl. circle)
+           .top_middle()
+           .bottom_middle()
+           .middle_left()
+           .middle_right()
+SVG.Rect (incl. rounded)
+        .top_left()
+        .top_right()
+        .bottom_left()
+        .bottom_right()
+  - return [x,y] suitable for edges, relative positioning

@@ -17,22 +17,25 @@
       txt.font({size: 20});
       circle.move(800, 300);
 
-      var no = draw.angled([800,100], [875,300], "down").arrow(20);
+      var no = draw.angled(rounded.middle_right(), circle.top_middle(), "down").arrow(20);
       draw.text("No.").font({family: "courier new", size:20}).move(890, 200);
 
-      var yes = draw.angled([700,150], [650,300], "up", 30).arrow(20);
+      var yes = draw.angled(rounded.bottom_middle(), [650,300], "up", 30).arrow(20);
       draw.text("Yes.").font({family: "courier new", size:20}).move(715, 225);
 
       var box = draw.polygon("50,200 650,200 650,500 1000,500 1000,800 50,800 50,200").fill("white").stroke({width:1});
       draw.text("Great.\nThat's really good.\nI like 'em too.\nCheck out the source for my extension to svg.js\nthat allows this sort of amazing flowcharts.").font({family: "courier new", size:20}).move(60,210);
       draw.text("").font({family: "courier new", size:20}).move(60,210);
 
-      draw.rounded(300,200,30).move(100,400).fill("white").stroke({width:1}).text("Want some code?\nHave some problems?\nMore information?").font({family: "courier new", size:20});
-      draw.line(200,600, 300,700).stroke({width:1}).arrow(30);
-      draw.text("Sure.").font({family: "courier new", size:20}).move(255, 625);
+      var c = draw.rounded(300,200,30).move(100,400).fill("white").stroke({width:1});
+      c.text("Want some code?\nHave some problems?\nMore information?").font({family: "courier new", size:20});
 
-      var github = draw.link("http://github.com/txje/flowchart-svg").rect(200,50).fill("white").stroke({width:1}).move(200,700);
+      var github = draw.link("http://github.com/txje/flowchart-svg").rect(200,50).fill("white").stroke({width:1}).move(500,700);
       github.text("Github").font({family: "courier new", size:20}).fill("blue");
+
+      draw.line(c.bottom_right()[0], c.bottom_right()[1], github.top_left()[0], github.top_left()[1]).stroke({width:1}).arrow(30);
+      draw.text("Sure.").font({family: "courier new", size:20}).move(455, 625);
+
     }
   </script>
 </head>
