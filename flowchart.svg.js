@@ -40,6 +40,11 @@
   SVG.Polygon.prototype._attr = SVG.Polygon.prototype.attr;
   SVG.Image.prototype._attr = SVG.Image.prototype.attr;
   SVG.extend(SVG.Rect, SVG.Path, SVG.Ellipse, SVG.Line, SVG.Polyline, SVG.Polygon, SVG.Image, {
+    moveCenter: function(x, y) {
+      var bbox = this.bbox();
+      this.move(x-bbox.width/2, y-bbox.height/2);
+      return this;
+    },
     text: function(arg) {
       this.txt = this.doc().put(new SVG.Text).text(arg);
       this.txt.container = this;
