@@ -129,7 +129,8 @@
     var elem_bbox = this.container.bbox();
     var elem_center = [elem_bbox.x + elem_bbox.width/2, elem_bbox.y + elem_bbox.height/2];
     // send these separately, if we send a dictionary, it will call back to attr()
-    this._attr('x', elem_center[0] - text_bbox.width/2);
+    this._attr('x', elem_center[0]);
+    this._attr('text-anchor', 'middle');
     this._attr('y', elem_center[1] - text_bbox.height/2 - this._attr("font-size")/this.leading()/2);
   };
 
@@ -150,7 +151,9 @@
   // angled [line]
   SVG.Doc.prototype.angled = function(start, end, direction, radius) {
     var line;
-    if(radius == null) {
+    if(direction == "line") {
+      line = this.line(start[0], start[1], end[0], end[1]);
+    } else if(radius == null) {
       if((direction == "down" && start[1] <= end[1]) || (direction == "up" && start[1] >= end[1])) {
         line = this.path("M " + start[0] + ' ' + start[1] + " L " + end[0] + ' ' + start[1] + " L " + end[0] + ' ' + end[1]);
       } else {
