@@ -154,11 +154,21 @@
     } else {
       var xdirection = (end[0] - start[0] > 0 ? 1 : -1);
       var ydirection = (end[1] - start[1] > 0 ? 1 : -1);
-      if((direction == "down" && start[1] <= end[1]) || (direction == "up" && start[1] >= end[1])) {
-        line = this.path("M " + start[0] + ' ' + start[1] + " L " + (end[0]-radius*xdirection) + ' ' + start[1] + " C " + end[0] + ' ' + start[1] + ' ' + end[0] + ' ' + start[1] + ' ' + end[0] + ' ' + (start[1]+radius*ydirection) + " L " + end[0] + ' ' + end[1]);
-      } else {
-        line = this.path("M " + start[0] + ' ' + start[1] + " L " + start[0] + ' ' + (end[1]-radius*ydirection) + " C " + start[0] + ' ' + end[1] + ' ' + start[0] + ' ' + end[1] + ' ' + (start[0]+radius*xdirection) + ' ' + end[1] + " L " + end[0] + ' ' + end[1]);
+      var max_radius = Math.min((end[0] - start[0]) / xdirection, (end[1] - start[1]) / ydirection);
+      if(radius > max_radius) {
+        console.warn("Radius too large, clipping.");
+        radius = max_radius;
       }
+      var p = "";
+      if((direction == "down" && start[1] <= end[1]) || (direction == "up" && start[1] >= end[1])) {
+        p = "M " + start[0] + ' ' + start[1] + " L " + (end[0]-radius*xdirection) + ' ' + start[1] + " S " + end[0] + ' ' + start[1] + ' ' + end[0] + ' ' + (start[1]+radius*ydirection);
+      } else {
+        p = "M " + start[0] + ' ' + start[1] + " L " + start[0] + ' ' + (end[1]-radius*ydirection) + " S " + start[0] + ' ' + end[1] + ' ' + (start[0]+radius*xdirection) + ' ' + end[1];
+      }
+      if(radius < max_radius) {
+        p += " L " + end[0] + ' ' + end[1];
+      }
+      line = this.path(p);
     }
     line.fill("none").stroke({width:1});
     return line;
