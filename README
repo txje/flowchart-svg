@@ -29,3 +29,6 @@ SVG.Rect (incl. rounded)
         .bottom_left()
         .bottom_right()
   - return [x,y] suitable for edges, relative positioning
+
+SVG.[Object].mathtex("tex string")
+  - renders LaTeX-type equations using KaTeX (must be imported)

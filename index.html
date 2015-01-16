@@ -2,7 +2,11 @@
 <head>
   <script src="svg.min.js"></script>
   <script src="flowchart.svg.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.1.1/katex.min.js"></script>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.1.1/katex.min.css">
   <script>
+    "use strict";
+
     function init() {
       var draw = SVG("output").size(1000, 800).fixSubPixelOffset();
       var rect = draw.rect(300, 100).stroke("black").fill("white").move(50, 50);
@@ -35,6 +39,8 @@
 
       draw.line(c.bottom_right()[0], c.bottom_right()[1], github.top_left()[0], github.top_left()[1]).stroke({width:1}).arrow(30);
       draw.text("Sure.").font({family: "courier new", size:20}).move(455, 625);
+
+      var mathbox = draw.rect(200,50).move(500,550).fill("white").stroke("green").mathtex("c = \\pm\\sqrt{a^2 + b^2}");
 
     }
   </script>
