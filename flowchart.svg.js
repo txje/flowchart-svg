@@ -51,6 +51,17 @@
       this.txt.adjust();
       return this.txt;
     },
+    mathtex: function(arg) {
+      if(!katex) {
+        console.log("KaTeX must be included to add mathTex.");
+        return null;
+      }
+      this.fo = this.doc().put(new SVG.ForeignObject);
+      this.fo.container = this;
+      katex.render(arg, this.fo.node);
+      this.fo.adjust();
+      return this.fo;
+    },
     attr: function(a, v, n) {
       var retval = this._attr(a, v, n);
       if(this.txt) {
@@ -181,6 +192,94 @@
     line.fill("none").stroke({width:1});
     return line;
   }
+
+
+  /*
+   * from https://github.com/memloom-development/svg.foreignobject.js
+   * under the appropriate license
+   * commit 8e2f6b29e1
+   * - except I spelled foreign correctly
+   *
+   * this is necessary for katex injection
+   */
+  SVG.ForeignObject = function() {
+    this.constructor.call(this, SVG.create('foreignObject'))
+    
+    /* store type */
+    this.type = 'foreignObject'
+  }
+
+  SVG.ForeignObject.prototype = new SVG.Shape
+
+  SVG.extend(SVG.ForeignObject, {
+    appendChild: function (child, attrs) {
+      var newChild = typeof(child)=='string' ? document.createElement(child) : child
+      if (typeof(attrs)=='object'){
+        for(a in attrs) newChild[a] = attrs[a]
+      }
+      this.node.appendChild(newChild)
+      return this  
+    },
+    getChild: function (index) {
+      return this.node.childNodes[index]
+    }
+  })
+
+  SVG.extend(SVG.Container, {
+    foreignObject: function(width, height) {
+      return this.put(new SVG.ForeignObject).size(width == null ? 100 : width, height == null ? 100 : height)
+    }
+  })
+
+
+  /*
+   * largely identical to Text
+   */
+  SVG.ForeignObject.prototype._attr = SVG.ForeignObject.prototype.attr;
+  SVG.ForeignObject.prototype.attr = function(a, v, n) {
+    var retval = this._attr(a, v, n);
+    if(this.container) {
+      this.adjust();
+    }
+    return retval;
+  }
+  // identical to svg.js version, except uses _attr
+  SVG.ForeignObject.prototype.rebuild = function(rebuild) {
+    /* store new rebuild flag if given */
+    if (typeof rebuild == 'boolean')
+      this._rebuild = rebuild
+
+    /* define position of all lines */
+    if (this._rebuild) {
+      var self = this
+      
+      this.lines.each(function() {
+        if (this.newLined) {
+          if (!this.textPath)
+            this.attr('x', self._attr('x'))
+          this.attr('dy', self._leading * new SVG.Number(self._attr('font-size'))) 
+        }
+      })
+
+      this.fire('rebuild')
+    }
+
+    return this
+  };
+  SVG.ForeignObject.prototype.adjust = function() {
+    console.log(this.node);
+    var text_bbox = {
+      width: this.node.childNodes[0].offsetWidth,
+      height: this.node.childNodes[0].offsetHeight
+    };
+    var elem_bbox = this.container.bbox();
+    var elem_center = [elem_bbox.x + elem_bbox.width/2, elem_bbox.y + elem_bbox.height/2];
+    // send these separately, if we send a dictionary, it will call back to attr()
+    this._attr('width', text_bbox.width);
+    this._attr('height', text_bbox.height);
+    this._attr('x', elem_center[0] - text_bbox.width/2);
+    this._attr('y', elem_center[1] - text_bbox.height/2);
+  };
 
 
 }).call(this);
