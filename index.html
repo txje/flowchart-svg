@@ -2,7 +2,16 @@
 <head>
   <script src="svg.min.js"></script>
   <script src="flowchart.svg.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.1.1/katex.min.js"></script>
+  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_SVG"></script>
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['$$','$$']],
+        displayMath: []
+      },
+      jax: ["input/TeX", "output/SVG"]
+    });
+  </script>
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.1.1/katex.min.css">
   <script>
     "use strict";
@@ -40,12 +49,69 @@
       draw.line(c.bottom_right()[0], c.bottom_right()[1], github.top_left()[0], github.top_left()[1]).stroke({width:1}).arrow(30);
       draw.text("Sure.").font({family: "courier new", size:20}).move(455, 625);
 
-      var mathbox = draw.rect(200,50).move(500,550).fill("white").stroke("green").mathtex("c = \\pm\\sqrt{a^2 + b^2}");
+      var mathbox = draw.rect(200,50).move(500,550).fill("white").stroke("green").mathjax("$$c = \\pm\\sqrt{a^2 + b^2}$$");
+
+      var maths = [];
+      MathJax.Hub.signal.Interest(
+        function (message) {
+          if(message[0] == "New Math") {
+            maths.push(message[1]); // name of math spans
+          }
+          if(message[0] == "End Process") { // done working, now we can fix it
+
+            // remove preview nodes, there should be no vestiges of MathJax left
+            var previews = document.getElementsByClassName("MathJax_Preview");
+            for(var p = 0; p < previews.length; p++) {
+              previews[p].parentNode.removeChild(previews[p]);
+            }
+
+            for(var m = 0; m < maths.length; m++) {
+              // move SVG out of span/div frame
+              var mframe = document.getElementById(maths[m]+"-Frame");
+              var g = mframe.parentNode;
+              var svg = mframe.childNodes[0];
+              var viewbox = svg.getAttribute("viewBox");
+              var pos = viewbox.split(' ');
+              console.log(pos);
+              var firstChild = svg.childNodes[0];
+              var root = g.previousSibling;
+              for(var c = 0; c < svg.childNodes.length; c++) {
+                var child = svg.childNodes[c];
+                g.insertBefore(child, mframe);
+              }
+              g.removeChild(mframe);
+              //g = g.parentNode;
+
+              var elem = g.previousSibling;
+              var elem_bbox = elem.getBBox();
+              var elem_center = [elem_bbox.x + elem_bbox.width/2, elem_bbox.y + elem_bbox.height/2];
+              var scale = 0.02;
+              g.setAttribute("transform", " translate(" + -8 + " " + -8 + ")");
+              var g_box = g.getBoundingClientRect();
+              console.log(g_box);
+              g.setAttribute("transform", g.getAttribute("transform") + " scale(" + scale + " " + scale + ")");
+              var g_box1 = g.getBoundingClientRect();
+              console.log(g_box1);
+              g.setAttribute("transform", g.getAttribute("transform") + " translate(" + -g_box1.left/scale + " " + -g_box1.top/scale + ")");
+              g.setAttribute("transform", g.getAttribute("transform") + " translate(" + elem_center[0]/scale + " " + elem_center[1]/scale + ")");
+              var g_box1 = g.getBoundingClientRect();
+              console.log(g_box1);
+              g.setAttribute("transform", g.getAttribute("transform") + " translate(" + -g_box1.width/2/scale + " " + -g_box1.height/2/scale + ")");
+              var g_box1 = g.getBoundingClientRect();
+              console.log(g_box1);
+
+              // remove math script tag
+              var math = document.getElementById(maths[m]);
+              math.parentNode.removeChild(math);
+            }
+          }
+        }
+      );
 
     }
   </script>
 </head>
-<body onload="init()">
+<body onload="init()" style="margin:0px; padding:0px;">
   <div id="output"></div>
 </body>
 </html>
