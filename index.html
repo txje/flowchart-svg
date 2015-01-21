@@ -85,14 +85,22 @@
               var elem = g.previousSibling;
               var elem_bbox = elem.getBBox();
               var elem_center = [elem_bbox.x + elem_bbox.width/2, elem_bbox.y + elem_bbox.height/2];
-              var scale = 0.02;
-              g.setAttribute("transform", " translate(" + -8 + " " + -8 + ")");
-              var g_box = g.getBoundingClientRect();
-              console.log(g_box);
+
+              // find out how much we need to shift it
+              var scale = 2;
+              var g_box_scale1 = g.getBoundingClientRect();
+              g.setAttribute("transform", " scale(" + scale + " " + scale + ")");
+              var g_box_scale2 = g.getBoundingClientRect();
+              var offset = [g_box_scale1.left*scale-g_box_scale2.left, g_box_scale1.top*scale-g_box_scale2.top];
+
+              // now for real
+              scale = 0.02;
+              g.setAttribute("transform", " translate(" + -offset[0] + " " + -offset[1] + ")");
               g.setAttribute("transform", g.getAttribute("transform") + " scale(" + scale + " " + scale + ")");
               var g_box1 = g.getBoundingClientRect();
-              console.log(g_box1);
               g.setAttribute("transform", g.getAttribute("transform") + " translate(" + -g_box1.left/scale + " " + -g_box1.top/scale + ")");
+              var g_box1 = g.getBoundingClientRect();
+              console.log(g_box1);
               g.setAttribute("transform", g.getAttribute("transform") + " translate(" + elem_center[0]/scale + " " + elem_center[1]/scale + ")");
               var g_box1 = g.getBoundingClientRect();
               console.log(g_box1);
